@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ForexServiceImpl implements ForexService {
 
@@ -29,5 +32,32 @@ public class ForexServiceImpl implements ForexService {
             return emaValue.get("values").get(0).get("ema").asText();
         }
         return null;
+    }
+
+    @Override
+    public List<String> getAllSymbols() {
+        List<String> symbols = List.of("XAU/USD", "BTC/USD", "USD/CAD", "USD/JPY", "USD/CHF", "EUR/USD", "AUD/USD", "GBP/USD");
+        List<String> result = new ArrayList<>();
+
+        for (String symbol : symbols) {
+            String currentPrice = getExchangePrice(symbol);
+            String ema5min = getEMAValue(symbol, "200", "5min");
+            String ema15min = getEMAValue(symbol, "200", "15min");
+
+            if (currentPrice != null && ema5min != null && ema15min != null) {
+                try {
+                    double price = Double.parseDouble(currentPrice);
+                    double ema5 = Double.parseDouble(ema5min);
+                    double ema15 = Double.parseDouble(ema15min);
+
+                    if (price > ema5 && price > ema15) {
+                        result.add(symbol);
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Error parsing price or EMA for symbol: " + symbol);
+                }
+            }
+        }
+        return result;
     }
 }

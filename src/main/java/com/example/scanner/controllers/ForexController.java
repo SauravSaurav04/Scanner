@@ -27,4 +27,9 @@ public class ForexController {
                 ? ResponseEntity.ok(forexService.getEMAValue(symbol, timePeriod, interval))
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("EMA price not found");
     }
+
+    @GetMapping("/getAllSymbols")
+    public ResponseEntity<?> getAllSymbols() {
+        return ResponseEntity.ok(forexService.getAllSymbols());
+    }
 }
