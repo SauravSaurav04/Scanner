@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ForexServiceImpl implements ForexService {
@@ -59,5 +58,43 @@ public class ForexServiceImpl implements ForexService {
             }
         }
         return result;
+    }
+
+    public Map<String, Double> getPriceAndEMA(String symbol) {
+
+        String currentPrice = getExchangePrice(symbol);
+        String ema1min = getEMAValue(symbol, "200", "1min");
+        String ema5min = getEMAValue(symbol, "200", "5min");
+        String ema15min = getEMAValue(symbol, "200", "15min");
+        String ema1h = getEMAValue(symbol, "200", "1h");
+
+        Map<String, Double> priceAndEMA = new HashMap<>();
+
+        if (currentPrice != null) {
+            priceAndEMA.put("Current Price", Double.parseDouble(currentPrice));
+        }
+        if (ema1min != null) {
+            priceAndEMA.put("EMA 1min", Double.parseDouble(ema1min));
+        }
+        if (ema5min != null) {
+            priceAndEMA.put("EMA 5min", Double.parseDouble(ema5min));
+        }
+        if (ema15min != null) {
+            priceAndEMA.put("EMA 15min", Double.parseDouble(ema15min));
+        }
+        if (ema1h != null) {
+            priceAndEMA.put("EMA 1h", Double.parseDouble(ema1h));
+        }
+        return priceAndEMA.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(
+                        java.util.stream.Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new
+                        )
+                );
     }
 }

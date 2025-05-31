@@ -1,6 +1,7 @@
 package com.example.scanner.services;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ForexService {
 
@@ -10,4 +11,5 @@ public interface ForexService {
 
     List<String> getAllSymbols();
 
+    public Map<String, Double> getPriceAndEMA(String symbol);
 }

@@ -32,4 +32,9 @@ public class ForexController {
     public ResponseEntity<?> getAllSymbols() {
         return ResponseEntity.ok(forexService.getAllSymbols());
     }
+
+    @GetMapping("/getPriceAndEMA")
+    public ResponseEntity<?> getPriceAndEMA(@RequestParam String symbol) {
+        return ResponseEntity.ok(forexService.getPriceAndEMA(symbol));
+    }
 }
